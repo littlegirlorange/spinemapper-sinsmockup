@@ -1,0 +1,61 @@
+﻿<Window x:Class="SinsProto.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:custns="clr-namespace:SinsProto"
+        Title="Spinal Instability Neoplastic Scorecard" Height="350" Width="700">
+    <Window.Resources>
+        <custns:SinsViewModel x:Key="sinsObj"/>
+    </Window.Resources>
+    <StackPanel HorizontalAlignment="Center">
+        <DataGrid Name="scorecard" AutoGenerateColumns="False" HeadersVisibility="Column" ColumnWidth="*">
+            <DataGrid.Resources>
+                <DataTemplate x:Key="DisplayTemplate" DataType="custns:SinsCategory">
+                    <TextBlock Text="{Binding Score}" />
+                </DataTemplate>
+                <DataTemplate x:Key="EditingTemplate" DataType="custns:SinsCategory">
+                    <ComboBox ItemsSource="{Binding PossibleScores}" 
+                              SelectedItem="{Binding Score, UpdateSourceTrigger=PropertyChanged }" 
+                              SelectedIndex="{Binding Score.Index}"
+                              IsSynchronizedWithCurrentItem="True" 
+                              IsReadOnly="True" />
+                </DataTemplate>
+            </DataGrid.Resources>
+            <DataGrid.ItemsSource>
+                <Binding Path="Scorecard" Source="{StaticResource sinsObj}" />
+            </DataGrid.ItemsSource>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Category" HeaderStyle="{StaticResource columnHeaderStyle}" 
+                                    Binding="{Binding Name}" 
+                                    Width="4*" />
+                <DataGridTextColumn Header="Score" HeaderStyle="{StaticResource columnHeaderCenterStyle}" 
+                                    Binding="{Binding Score.Value}" 
+                                    ElementStyle="{Binding Source={StaticResource columnCellCenterStyle}}"  
+                                    Width="1*" />
+                <DataGridTemplateColumn Header="Details" HeaderStyle="{StaticResource columnHeaderStyle}"
+                                        CellTemplate="{StaticResource DisplayTemplate}"                                        
+                                        CellEditingTemplate="{StaticResource EditingTemplate}"
+                                        Width="5*" />
+            </DataGrid.Columns>
+        </DataGrid>
+        <Grid Background="LightGray" HorizontalAlignment="Stretch" Margin="0,0,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="4*"></ColumnDefinition>
+                <ColumnDefinition Width="1*"></ColumnDefinition>
+                <ColumnDefinition Width="5*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="Total Spinal Instability Neoplastic Score"
+                       Style="{Binding Source={StaticResource resultsStyle}}" 
+                       HorizontalAlignment="Stretch" />
+            <TextBlock Grid.Column="1" Text="{Binding Total, Source={StaticResource sinsObj}}" 
+                       Style="{Binding Source={StaticResource resultsStyle}}"
+                       TextAlignment="Center"
+                       HorizontalAlignment="Stretch" />
+            <TextBlock Grid.Column="2" Text="{Binding Diagnosis, Source={StaticResource sinsObj}}" 
+                       Style="{Binding Source={StaticResource resultsStyle}}" 
+                       HorizontalAlignment="Stretch" TextWrapping="WrapWithOverflow"/>
+        </Grid>
+    </StackPanel>
+</Window>
